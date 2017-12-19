@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <React/RCTBridge.h>
+#import "ReactNativeNavigation-swift.h"
 
 @interface RCCTabBarController : UITabBarController <UITabBarDelegate>
 
