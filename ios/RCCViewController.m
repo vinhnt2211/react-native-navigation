@@ -11,6 +11,7 @@
 #import "RCTHelpers.h"
 #import "RCCTitleViewHelper.h"
 #import "RCCCustomTitleView.h"
+#import "ReactNativeNavigation-Swift.h"
 
 
 NSString* const RCCViewControllerCancelReactTouchesNotification = @"RCCViewControllerCancelReactTouchesNotification";
@@ -72,7 +73,64 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
   // tab bar controller
   if ([type isEqualToString:@"TabBarControllerIOS"])
   {
+    NSMutableArray *viewControllers = [[NSMutableArray alloc] init];
     controller = [[RCCTabBarController alloc] initWithProps:props children:children globalProps:globalProps bridge:bridge];
+    
+    ESTabBarController *tabBarController = [[ESTabBarController alloc] init];
+    tabBarController.title = @"Irregularity";
+    tabBarController.tabBar.shadowImage = [UIImage imageNamed:@"transparent"];
+    
+    tabBarController.tabBar.backgroundImage = [UIImage imageNamed:@"background_tab"];
+    
+    NSDictionary * child0 = [children objectAtIndex:0];
+    NSDictionary *childLayout = child0[@"children"][0];
+    UIViewController *viewController1 = [RCCViewController controllerWithLayout:childLayout globalProps:globalProps bridge:bridge];
+    
+    int i =0;
+    for (NSDictionary* tabItemLayout in children){
+      // make sure the layout is valid
+      if (![tabItemLayout[@"type"] isEqualToString:@"TabBarControllerIOS.Item"]) continue;
+      if (!tabItemLayout[@"props"]) continue;
+      
+      // get the view controller inside
+      if (!tabItemLayout[@"children"]) continue;
+      if (![tabItemLayout[@"children"] isKindOfClass:[NSArray class]]) continue;
+      if ([tabItemLayout[@"children"] count] < 1) continue;
+      NSDictionary *childLayout = tabItemLayout[@"children"][0];
+      UIViewController *viewController = [RCCViewController controllerWithLayout:childLayout globalProps:globalProps bridge:bridge];
+      
+      NSString *imageName = tabItemLayout[@"props"][@"imageName"];
+      if (i == 2) {
+        viewController.tabBarItem = [[ESTabBarItem alloc]init:([[ExampleIrregularityContentView alloc] init]) title:nil image:[UIImage imageNamed: imageName] selectedImage:[UIImage imageNamed: [NSString stringWithFormat:@"%@-selected",imageName]] tag:i];
+      }else{
+        viewController.tabBarItem = [[ESTabBarItem alloc]init:([[ExampleIrregularityBasicContentView alloc] init]) title:nil image:[UIImage imageNamed: imageName] selectedImage:[UIImage imageNamed: [NSString stringWithFormat:@"%@-selected",imageName]] tag:i];
+      }
+      [viewControllers addObject:viewController];
+      i++;
+    }
+    
+    tabBarController.viewControllers = [NSArray arrayWithArray:viewControllers];
+    
+    NSString *componentId = props[@"id"];
+    if (tabBarController && componentId)
+    {
+      [[RCCManager sharedInstance] registerController:tabBarController componentId:componentId componentType:type];
+      
+      if([controller isKindOfClass:[RCCViewController class]])
+      {
+        ((RCCViewController*)controller).controllerId = componentId;
+      }
+    }
+    
+    // set background image at root level
+    NSString *rootBackgroundImageName = props[@"style"][@"rootBackgroundImageName"];
+    if (rootBackgroundImageName) {
+      UIImage *image = [UIImage imageNamed: rootBackgroundImageName];
+      UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+      [tabBarController.view insertSubview:imageView atIndex:0];
+    }
+    
+    return tabBarController;
   }
   
   // side menu controller
