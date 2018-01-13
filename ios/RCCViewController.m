@@ -787,7 +787,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 - (BOOL)hidesBottomBarWhenPushed
 {
   if (!self._hidesBottomBarWhenPushed) return NO;
-  return (self.navigationController.topViewController == self) && ![(RCCTabBarController*)self.tabBarController tabBarHidden];
+  return (self.navigationController.topViewController == self);
 }
 
 - (BOOL)prefersStatusBarHidden
