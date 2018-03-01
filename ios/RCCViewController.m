@@ -80,7 +80,8 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     tabBarController.title = @"Irregularity";
     tabBarController.tabBar.shadowImage = [UIImage imageNamed:@"transparent"];
     
-    tabBarController.tabBar.backgroundImage = [UIImage imageNamed:@"background_tab"];
+//    tabBarController.tabBar.backgroundImage = [UIImage imageNamed:@"background_tab"];
+    tabBarController.tabBar.backgroundColor = [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
     
     NSDictionary * child0 = [children objectAtIndex:0];
     NSDictionary *childLayout = child0[@"children"][0];
